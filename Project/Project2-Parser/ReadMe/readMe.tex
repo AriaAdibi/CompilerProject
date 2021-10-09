@@ -1,0 +1,455 @@
+\documentclass [a4paper]{article}
+
+\usepackage{amsmath}
+\usepackage[margin=2cm]{geometry}
+\usepackage{lscape}
+\usepackage{longtable}
+\usepackage{xepersian}
+
+\settextfont{XB Niloofar}
+\setcounter{secnumdepth}{0}
+
+\newcommand{\bpline}{\\\vspace{3em}}
+\newcommand{\ipline}{\\\vspace{0.5em}}
+\newcommand{\cfgor}{\quad|\quad}
+\newcommand{\cfgprod}{\quad\rightarrow\quad}
+
+\newenvironment{mathmode}
+{\begin{center}
+	\begin{latin}}
+{	\end{latin}
+\end{center}}
+
+\begin{document}
+	\noindent
+	توضیحات پروژه‌ی دوم کامپایلر
+	\\
+	\vspace{1em}
+	\\
+	آریا ادیبی
+	\hfill
+	۹۲۱۱۰۴۷۶
+	\\
+	خشایار میرمحمدصادق
+	\hfill
+	۹۲۱۰۰۹۸۶
+	\\
+	\vspace{2em}
+	\\
+	
+	\section{گرامر}
+	در زیر گرامر تغییر یافته‌ی زبان آمده است. برای هر قانون ابتدا شماره‌ی آن، سپس خود قانون و در خط بعدی مقادیر 
+	\lr{Token}هایی
+	که انتظار دیدن آن‌‌ها را داریم آمده است. در واقع این
+	\lr{Token}ها
+	همان‌هایی هستند که در 
+	\lr{LL(1) Table}
+	برای این متغیر مقدار دارند و بقیه 
+	\lr{error}
+	هستند. در همین پوشه فایل
+	\lr{LL(1)-Table.xlsx}
+	این جدول را نشان داده است. در صورت تمایل برای دیدن 
+	\lr{First}
+	و
+	\lr{Follow}
+	هر متغیر می‌توانید از کد زده شده استفاده کنید.
+	
+	با بررسی گرامر جدید به راحتی می‌توان دید که همان زبان قبلی را تولید می‌کند. نکته‌های زیر برای فهم گرامر جدید مفید هستند:
+	\begin{itemize}
+		\item
+		برای بهبود سرعت، آن 
+		\lr{Token}هایی 
+		که رفتار یکسان در ساختار یاب داشتند را در یک گروه قرار دادم و ساختار یاب آن‌ها را به عنوان 1 
+		\lr{token}
+		می‌شناسد. برای مثال
+		\lr{ \bfseries basic\_type }
+		گروهی است که عضو‌های آن
+		\lr{ \bfseries int, float, char, boolean }
+		هستند. گروه‌های 
+		\lr{ \bfseries reader } 
+		و
+		\lr{ \bfseries writer }
+		نیز وجود دارند که عضو‌های این 2 مشخص است.
+		%%%%
+		\item
+		قانون‌های
+		$\langle expression \rangle \rightarrow \langle expr0 \rangle$،
+		$\langle condOp0 \rangle \rightarrow \langle \textbf{||} \rangle$
+		و
+		$\langle condOp1 \rangle \rightarrow \langle \textbf{\&\&} \rangle$
+		لزومی نداشتند و تنها برای خوانایی گذاشته شده‌اند. تأثیر این‌ها بر سرعت قابل توجه نیست.
+		%%%%
+		\item
+		قسمت 
+		\lr{expression}
+		طوری طراحی شده که اولاً همان طور که خواسته شده بود تمامی عملگر‌ها از
+		چب به راست اجرا شوند و دوماً اولویت آن‌ها نیز رعایت شود.
+		
+	\end{itemize}
+	
+	\begin{mathmode}
+		\begin{longtable}{l l c l}
+			0 & $\langle start \rangle$ & $\cfgprod$ & $\langle program \rangle \textbf{EOF}$
+			\ipline
+			\\
+			\multicolumn{4}{c}{\framebox[1.1\width]{\textbf{void basic\_type EOF}}}
+			\bpline
+			\\
+			1 & $\langle program \rangle$ & $\cfgprod$ & $\textbf{void id (} \langle formalParameters \rangle \textbf{)} \langle block \rangle\ \langle program \rangle$
+			\\
+			2 3 & & & $\cfgor \textbf{basic\_type id} \langle rProgram \rangle \cfgor \boldsymbol \epsilon$
+			\ipline
+			\\
+			\multicolumn{4}{c}{\framebox[1.1\width]{\textbf{void basic\_type EOF}}}
+			\bpline
+			\\
+			4 & $\langle rProgram \rangle$ & $\cfgprod$ & $\langle dimDecleration \rangle \langle rVarList \rangle \textbf{;} \langle program \rangle$
+			\\
+			5 & & & $\cfgor \textbf{(} \langle formalParameters \rangle \textbf{)} \langle block \rangle \langle program \rangle$
+			\ipline
+			\\
+			\multicolumn{4}{c}{\framebox[2\width]{\textbf{[ , ; (}}}
+			\bpline
+			\\
+			6 7 & $\langle formalParameteres \rangle$ & $\cfgprod$ & $\textbf{basic\_type id} \langle rFormalParameters \rangle \cfgor \boldsymbol \epsilon$
+			\ipline
+			\\
+			\multicolumn{4}{c}{\framebox[1.5\width]{\textbf{basic\_type )}}}
+			\bpline
+			\\
+			8 9 & $\langle rFormalParameters \rangle$ & $\cfgprod$ & $\textbf{, basic\_type id} \langle rFormalParameters \rangle \cfgor \boldsymbol \epsilon$
+			\ipline
+			\\
+			\multicolumn{4}{c}{\framebox[2\width]{\textbf{) ,}}}
+			\bpline
+			\\
+			10 11 & $\langle rVarList \rangle$ & $\cfgprod$ & $\textbf{, id} \langle dimDeclaration \rangle \cfgor \boldsymbol \epsilon$
+			\ipline
+			\\
+			\multicolumn{4}{c}{\framebox[2\width]{\textbf{; ,}}}
+			\bpline
+			\\
+			12 13 & $\langle dimDeclaration \rangle$ & $\cfgprod$ & $\textbf{[int\_num]} \langle dimDeclaration \rangle \cfgor \boldsymbol \epsilon$
+			\ipline
+			\\
+			\multicolumn{4}{c}{\framebox[2\width]{\textbf{, ; [}}}
+			\bpline
+			\\
+			14 & $\langle block \rangle$ & $\cfgprod$ & $\textbf{\{} \langle blockContents \rangle \textbf{\}}$
+			\ipline
+			\\
+			\multicolumn{4}{c}{\framebox[2\width]{\textbf{\{}}}
+			\bpline
+			\\
+			15 & $\langle blockContents \rangle$ & $\cfgprod$ & $\textbf{basic\_type id} \langle dimDeclaration \rangle \langle rVarList \rangle \textbf{;} \langle blockContents \rangle$
+			\\
+			16 17 & & & $\cfgor \langle statement \rangle \langle blockContents \rangle \cfgor \boldsymbol \epsilon$
+			\ipline
+			\\
+			\multicolumn{4}{c}{\framebox[1.1\width]{\textbf{basic\_type ) id if while for return break continue \{ reader writer}}}
+			\bpline
+			\\
+			18 & $\langle statement \rangle$ & $\cfgprod$ & $\textbf{id} \langle assignmentOrMethodCall \rangle$
+			\\
+			19 & & & $\cfgor \textbf{if (} \langle expression \rangle \textbf{)} \langle block \rangle \langle optElse \rangle$
+			\\
+			20 & & & $\cfgor \textbf{while(} \langle expression \rangle \textbf{)} \langle block \rangle$
+			\\
+			21 & & & $\cfgor \textbf{for(} \langle assignment \rangle \textbf{;} \langle expression \rangle \textbf{;} \langle assignment \rangle \textbf{)} \langle block \rangle$
+			\\
+			22 & & & $\cfgor \textbf{return} \langle retExpr \rangle \textbf{;}$
+			\\
+			23 & & & $\cfgor \textbf{break;}$
+			\\
+			24 & & & $\cfgor \textbf{continue;}$
+			\\
+			25 & & & $\cfgor \langle block \rangle$
+			\\
+			26 & & & $\cfgor \textbf{reader} \langle location \rangle \textbf{;}$
+			\\
+			27 & & & $\cfgor \textbf{writer} \langle expression \rangle \textbf{;}$
+			\ipline
+			\\
+			\multicolumn{4}{c}{\framebox[1.1\width]{\textbf{id if while for return break continue \{ reader writer}}}
+			\bpline
+			\\
+			28 & $assignmentOrMethodCall$ & $\cfgprod$ & $\langle dimLocation \rangle \textbf{=} \langle expression \rangle \textbf{;}$
+			\\
+			29 & & & $\cfgor \textbf{(} \langle parameters \rangle textbf{);}$
+			\ipline
+			\\
+			\multicolumn{4}{c}{\framebox[2\width]{\textbf{( [ =}}}
+			\bpline
+			\\
+			30 31 & $\langle optElse \rangle$ & $\cfgprod$ & $\textbf{else} \langle block \rangle \cfgor \boldsymbol \epsilon$
+			\ipline
+			\\
+			\multicolumn{4}{c}{\framebox[1.1\width]{\textbf{else id if while for return break continue \{ reader writer \}}}}
+			\bpline
+			\\
+			32 33 & $\langle dimLocation \rangle$ & $\cfgprod$ & $\textbf{[} \langle expression \rangle \textbf{]} \langle dimLocation \rangle \cfgor \boldsymbol \epsilon$
+			\ipline
+			\\
+			\multicolumn{4}{c}{\framebox[1.1\width]{\textbf{[ ; = || \&\& == != < <= => > + - * / \% , ] ) }}}
+			\bpline
+			\\
+			34 & $\langle location \rangle$ & $\cfgprod$ & $\textbf{id} \langle dimLocation \rangle$
+			\ipline
+			\\
+			\multicolumn{4}{c}{\framebox[2\width]{\textbf{id}}}
+			\bpline
+			\\
+			35 & $ \langle assignment \rangle$ & $\cfgprod$ & $\langle location \rangle \textbf{=} \langle expression \rangle$
+			\ipline
+			\\
+			\multicolumn{4}{c}{\framebox[2\width]{\textbf{id}}}
+			\bpline
+			\\
+			36 37 & $\langle retExpr \rangle$ & $\cfgprod$ & $expression \cfgor \boldsymbol \epsilon$
+			\ipline
+			\\
+			\multicolumn{4}{c}{\framebox[1.1\width]{\textbf{! - ( id int\_num real\_num char\_literal true false ;}}}
+			\bpline
+			\\
+			38 & $\langle expression \rangle$ & $\cfgprod$ & $\langle expr0 \rangle$
+			\ipline
+			\\
+			\multicolumn{4}{c}{\framebox[1.1\width]{\textbf{! - ( id int\_num real\_num char\_literal true false}}}
+			\bpline
+			\\
+			39 & $\langle expr0 \rangle$ & $\cfgprod$ & $\langle expr1 \rangle \langle rExpr0 \rangle$
+			\ipline
+			\\
+			\multicolumn{4}{c}{\framebox[1.1\width]{\textbf{! - ( id int\_num real\_num char\_literal true false}}}
+			\bpline
+			\\
+			40 41 & $\langle rExpr0 \rangle$ & $\cfgprod$ & $\langle condOp0 \rangle \langle expr1 \rangle \langle rExpr0 \rangle \cfgor \boldsymbol \epsilon$
+			\ipline
+			\\
+			\multicolumn{4}{c}{\framebox[1.5\width]{\textbf{|| ; ) ] ,}}}
+			\bpline
+			\\
+			42 & $\langle expr1 \rangle$ & $\cfgprod$ & $\langle expr2 \rangle \langle rExpr1 \rangle$
+			\ipline
+			\\
+			\multicolumn{4}{c}{\framebox[1.1\width]{\textbf{! - ( id int\_num real\_num char\_literal true false}}}
+			\bpline
+			\\
+			43 44 & $\langle rExpr1 \rangle$ & $\cfgprod$ & $\langle condOp1 \rangle \langle expr2 \rangle \langle rExpr1 \rangle \cfgor \boldsymbol \epsilon$
+			\ipline
+			\\
+			\multicolumn{4}{c}{\framebox[1.1\width]{\textbf{\&\& || ; ) ] ,}}}
+			\bpline
+			\\
+			45 & $\langle expr2 \rangle$ & $\cfgprod$ & $\langle expr3 \rangle \langle rExpr2 \rangle$
+			\ipline
+			\\
+			\multicolumn{4}{c}{\framebox[1.1\width]{\textbf{! - ( id int\_num real\_num char\_literal true false}}}
+			\bpline
+			\\
+			46 47 & $\langle rExpr2 \rangle$ & $\cfgprod$ & $\langle eqOp \rangle \langle expr3 \rangle \langle rExpr2 \rangle \cfgor \boldsymbol \epsilon$
+			\ipline
+			\\
+			\multicolumn{4}{c}{\framebox[1.1\width]{\textbf{== != \&\& || ; ) ] ,}}}
+			\bpline
+			\\
+			48 & $\langle expr3 \rangle$ & $\cfgprod$ & $\langle expr4 \rangle \langle rExpr3 \rangle$
+			\ipline
+			\\
+			\multicolumn{4}{c}{\framebox[1.1\width]{\textbf{! - ( id int\_num real\_num char\_literal true false}}}
+			\bpline
+			\\
+			49 50 & $\langle rExpr3 \rangle$ & $\cfgprod$ & $\langle relOp \rangle \langle expr4 \rangle \langle rExpr3 \rangle \cfgor \boldsymbol \epsilon$
+			\ipline
+			\\
+			\multicolumn{4}{c}{\framebox[1.1\width]{\textbf{< <= >= > == != \&\& || ; ) ] ,}}}
+			\bpline
+			\\
+			51 & $\langle expr4 \rangle$ & $\cfgprod$ & $\langle expr5 \rangle \langle rExpr4 \rangle$
+			\ipline
+			\\
+			\multicolumn{4}{c}{\framebox[1.1\width]{\textbf{! - ( id int\_num real\_num char\_literal true false}}}
+			\bpline
+			\\
+			52 53 & $\langle rExpr4 \rangle$ & $\cfgprod$ & $\langle arithOp0 \rangle \langle expr5 \rangle \langle rExpr4 \rangle \cfgor \boldsymbol \epsilon$
+			\ipline
+			\\
+			\multicolumn{4}{c}{\framebox[1.1\width]{\textbf{+ - < <= >= > == != \&\& || ; ) ] ,}}}
+			\bpline
+			\\
+			54 & $\langle expr5 \rangle$ & $\cfgprod$ & $\langle expr6 \rangle \langle rExpr5 \rangle$
+			\ipline
+			\\
+			\multicolumn{4}{c}{\framebox[1.1\width]{\textbf{! - ( id int\_num real\_num char\_literal true false}}}
+			\bpline
+			\\
+			55 56 & $\langle rExpr5 \rangle$ & $\cfgprod$ & $\langle arithOp1 \rangle \langle expr6 \rangle \langle rExpr5 \rangle \cfgor \boldsymbol \epsilon$
+			\ipline
+			\\
+			\multicolumn{4}{c}{\framebox[1.1\width]{\textbf{* / \% + - < <= >= > == != \&\& || ; ) ] ,}}}
+			\bpline
+			\\
+			57 58 & $\langle expr6 \rangle$ & $\cfgprod$ & $\textbf{!} \langle expr6 \rangle \cfgor \langle expr7 \rangle$
+			\ipline
+			\\
+			\multicolumn{4}{c}{\framebox[1.1\width]{\textbf{! - ( id int\_num real\_num char\_literal true false}}}
+			\bpline
+			\\
+			59 60 & $\langle expr7 \rangle$ & $\cfgprod$ & $\textbf{-} \langle expr7 \rangle \cfgor \langle expr8 \rangle$
+			\ipline
+			\\
+			\multicolumn{4}{c}{\framebox[1.1\width]{\textbf{- ( id int\_num real\_num char\_literal true false}}}
+			\bpline
+			\\
+			61 62 & $\langle expr8 \rangle$ & $\cfgprod$ & $\langle atomicExpr \rangle \cfgor \textbf{(} \langle expr0 \rangle \textbf{)}$
+			\ipline
+			\\
+			\multicolumn{4}{c}{\framebox[1.1\width]{\textbf{( id int\_num real\_num char\_literal true false}}}
+			\bpline
+			\\
+			63 & $condOp0$ & $\cfgprod$ & $\textbf{||}$
+			\ipline
+			\\
+			\multicolumn{4}{c}{\framebox[2\width]{\textbf{||}}}
+			\bpline
+			\\
+			64 & $condOp1$ & $\cfgprod$ & $\textbf{\&\&}$
+			\ipline
+			\\
+			\multicolumn{4}{c}{\framebox[1.5\width]{\textbf{\&\&}}}
+			\bpline
+			\\
+			65 66 & $eqOp$ & $\cfgprod$ & $\textbf{==} \cfgor \textbf{!=}$
+			\ipline
+			\\
+			\multicolumn{4}{c}{\framebox[1.5\width]{\textbf{== !=}}}
+			\bpline
+			\\
+			67 68 69 70 & $relOp$ & $\cfgprod$ & $\textbf{<} \cfgor \textbf{<=}  \cfgor \textbf{>=}  \cfgor \textbf{>}$
+			\ipline
+			\\
+			\multicolumn{4}{c}{\framebox[1.1\width]{\textbf{< <= >= >}}}
+			\bpline
+			\\
+			71 72 & $arithOp0$ & $\cfgprod$ & $\textbf{+} \cfgor \textbf{-}$
+			\ipline
+			\\
+			\multicolumn{4}{c}{\framebox[1.5\width]{\textbf{+ -}}}
+			\bpline
+			\\
+			73 74 75 & $arithOp1$ & $\cfgprod$ & $\textbf{*} \cfgor \textbf{/} \cfgor \textbf{\%}$
+			\ipline
+			\\
+			\multicolumn{4}{c}{\framebox[1.1\width]{\textbf{* / \%}}}
+			\bpline
+			\\
+			76 77& $\langle atomicExpr \rangle$ & $\cfgprod$ & $\textbf{id} \langle locationOrMethodCall \rangle \cfgor \textbf{int\_num}$
+			\\
+			78 79 80 81 & & & $\cfgor \textbf{real\_num} \cfgor \textbf{char\_literal} \cfgor \textbf{true} \cfgor \textbf{false}$
+			\ipline
+			\\
+			\multicolumn{4}{c}{\framebox[1.1\width]{\textbf{id int\_num real\_num char\_literal true false}}}
+			\bpline
+			\\
+			82 83 & $\langle locationOrMethodCall \rangle$ & $\cfgprod$ & $\langle dimLocation \rangle \cfgor \textbf{(} \langle parameters \rangle \textbf{)}$
+			\ipline
+			\\
+			\multicolumn{4}{c}{\framebox[1.1\width]{\textbf{[ ( * / \% + - < <= >= > == != \&\& || , ] ; ) }}}
+			\bpline
+			\\
+			84 85 & $\langle parameters \rangle$ & $\cfgprod$ & $\langle expression \rangle \langle rParameters \rangle \cfgor \boldsymbol \epsilon$
+			\ipline
+			\\
+			\multicolumn{4}{c}{\framebox[1.1\width]{\textbf{! - ( id int\_num real\_num char\_literal true false )}}}
+			\bpline
+			\\
+			86 87 & $\langle rParameters \rangle$ & $\cfgprod$ &  $\textbf{,} \langle expression \rangle \langle rParameters \rangle \cfgor \boldsymbol \epsilon$
+			\ipline
+			\\
+			\multicolumn{4}{c}{\framebox[2\width]{\textbf{, )}}}
+			\bpline
+			\\
+		\end{longtable}
+	\end{mathmode}
+	
+	برای آن گه نشان دهیم گرامری 
+	\lr{LL(1)}
+	است کافیست برای هر متغیر نشان دهیم که 
+	\lr{First}
+	قانون‌های آن دو به دو متمایز اند و اگر 
+	\lr{First}ای
+	دارای
+	$\epsilon$
+	بود این تمایز باید در قانون‌‌های دیگر و 
+	\lr{Follow}
+	متغیر نیز وجود داشته باشد. با توجه به گرامر و 
+	\lr{Token}هایی
+	که در پایین هر قانون ذکر شده است سخت نیست که از درستی این شرط اطمینان حاصل کنیم. از آن جایی که این شرط برقرار است می‌توان نتیجه گرفت که گرامر ابهام ندارد پس ابهام گرامر اولیه  را نیز رفع کرده‌ایم.
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\section{برنامه‌ی نوشته شده}
+	در این برنامه تمامی شرط‌های خواسته شده در پروژه رعایت شده است. به صورت
+	موقت برنامه خروجی می‌دهد که قانون‌های انتخاب شده را انتخاب می‌کند. این برنامه طوری نوشته شده است که مستقل از داده ساختار 
+	\lr{LL(1) Table}
+	و سیاست
+	\lr{error recovery}
+	وهمچنین گرامر زبان
+	کار می‌کند و اگر مورد پسند بود می‌توان این 3 را تغییر داد بدون این که نیازی
+	به تغییر بقیه قسمت‌ها باشد.
+	\subsection{Error Recovery}
+	این برنامه شامل 3 تایع
+	\lr{getFirst()}،
+	\lr{getFollow()}
+	و
+	\lr{getSynchronizingSet()}
+	است که یک متغیر به عنوان ورودی می‌گیرند و کار آن‌ها مشخص است. سیاست فعلی انتخاب شده 
+	\lr{ ``\it \bfseries Panic mode Recovery'' }
+	است. در این جا پیاده سازی به صورت مستقیم و با پشته بوده است. کاری که من در اینجا انجام می‌دهم از این قرار است. هنگامی که مشکل پیش می‌آید 2 حالت دارد:
+	\begin{enumerate}
+		\item
+		{ \it
+		بالای پشته
+		\lr{terminal}ای 
+		قرار دارد و با 
+		\lr{Token}
+		ما فرق دارد}:\\
+		
+		در این حالت آن قدر از ورودی می‌خوانیم تا این برابری حاصل شود. دقت
+		کنید که اگر به انتهای فایل برسیم 
+		\lr{error recovery}
+		ما شکست خورده است.
+		%%%%
+		\item
+		{ \it
+			بالای پشته
+			\lr{variable}ای 
+			قرار دارد و طبق 
+			\lr{LL(1) Table}
+			با 
+			\lr{Token}
+			خوانده شده به مشکل می‌خوریم}:\\
+		
+		در این حالت به پشته دست نمی‌زنم و از ورودی آن مقدار می‌خوانم که
+		برابر با یکی از 
+		\lr{Token}های
+		در 
+		\lr{First}
+		این متغیر شود. دقت
+		کنید که اگر به انتهای فایل برسیم 
+		\lr{error recovery}
+		ما شکست خورده است.
+		
+		در آخر چند نکته‌ی نهایی قابل ذکر است.  نکته‌ی اول این که این سیاست به کمک آن 3 تابع ذکر شده در ابتدا در کمتر از حدود 10 خط تقریباً به تمام ساست‌های معروف دیگر ساده تبدیل می‌شود؛ برای مثال یک سیاست این می‌تواند باشد که در حالت 2 متغیر را از پشته حذف کنیم انگار که نبوده است و در ورودی تا اولین
+		\lr{Token}
+		که در
+		\lr{Follow}
+		متغیر وجود دارد را در نظر نگیریم و سپس ادامه دهیم.
+		نکته‌ی دوم این که اجرای 
+		\lr{error recovery}
+		در هر مرحله دست صدا زننده‌ی ساختار یاب است از این رو اگر برای مشکلی
+		نخواستیم 
+		\lr{recover}
+		کنیم به راحتی می‌توانیم. حتی می‌توان کلاً 
+		\lr{recovery}
+		نداشت.
+	\end{enumerate}
+\end{document}

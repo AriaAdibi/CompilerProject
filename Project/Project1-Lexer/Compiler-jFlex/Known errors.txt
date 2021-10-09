@@ -1,0 +1,6 @@
+1. char range
+2. local include
+3. EOF problem
+4. '\ problem (+space)
+5. Problem 1b
+6. EOF

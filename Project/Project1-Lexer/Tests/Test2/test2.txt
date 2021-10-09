@@ -1,0 +1,31 @@
+#include"C:\myVDrive\WorkSpace\This Semester\Compiler\Projects\Project1-Lexer\Tests\Test2\A Directory\iostream.h"
+
+using namespace std;
+
+int main(){
+    int a=1;
+    char
+
+
+        a                   =
+        'd'
+    {
+        haha
+    }
+
+    int/* /*:D /*  / ** */abc  ;
+    boolean 1b
+    writechar()
+    return -1;
+    return 0
+    0xasf
+    0xabcd102010x0012
+    0x0012
+    .1 1.;1.1
+    if( i>= 0 || < = 1 != 002)
+    while(true)false
+    for( a; 1=false readint )
+    break/**/continue
+    breakcontinue
+    a[2][0x2][]
+}

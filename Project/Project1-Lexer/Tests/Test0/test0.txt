@@ -1,0 +1,39 @@
+//#include"C:\Users\mmskh\Uni\Compiler\project1\Compiler\Tests\Test0\iostream.h
+
+//int a = 5;
+int//a
+
+//#include "C:\Users\mmskh\Uni\Compiler\project1\Compiler\Tests\Test0\iomanip.salam"
+
+int num= 0xaA
+0ba
+0123
+check the CV bitch
+'\n''\t''\\'
+
+
+
+
+                '\''
+                //'\'//TODO
+
+
+using namespace std;
+
+int main(){
+    int a=1;
+    char
+
+
+        a                   =
+        'd'
+    {
+        haha
+    }
+
+    int/* /*:D /*  / ** */abc  ;;;;;;
+    boolean 1b
+    writechar()
+    return -1;
+    return 0;
+}
