@@ -7,7 +7,7 @@ The program may be configured to generate the machine code in **one-pass**, inst
 
 ### Lexer
 Two implementation:
-- Raw Java
+- Raw Java code
 - Using jFlex
 
 Capabilities:
