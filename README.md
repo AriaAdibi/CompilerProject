@@ -1,4 +1,4 @@
-This project is a java implementation of a compiler translating *Decaf* language to a certain target (virtual) machine code. The details of the definitions and objectives can be found in [*DecafProject.pdf*](https://github.com/AriaAdibi/CompilerProject/blob/modifyingTheREADME/DecafProject.pdf).
+This project is a java implementation of a compiler translating *Decaf* language to a certain target (virtual) machine code. The details of the definitions and objectives can be found in [*DecafProject.pdf*](https://github.com/AriaAdibi/CompilerProject/blob/modifyingTheREADME/DecafProject.pdf). The execution of the virtual machine is also implemented.
 
 *No special tool is used in this project and all parts are implemented.*
 
@@ -24,3 +24,7 @@ The program may be configured to generate the machine code in **one-pass**, inst
 ## TODO
 - Optimizations for IR code
 - Making a better interface for choosing the options.
+
+## Screenshots
+
+![sort](/Overview/Screenshots-IRCode/sort.png)
