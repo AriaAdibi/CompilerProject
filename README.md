@@ -1,3 +1,5 @@
+This project is a java implementation of a compiler for *Decaf* language to a certain (virtual) machine code. The details of the objective and definition can be found in *DecafProject.pdf*.
+
 *No special tool is used. All parts are implemented.
 
 *Generates the "Intermediate Representation" in one pass.
