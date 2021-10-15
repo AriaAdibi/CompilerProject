@@ -1,6 +1,6 @@
 # Decaf Compiler
 
-This project is a java implementation of a compiler translating *Decaf* language to a certain target (virtual) machine code. The details of the definitions and objectives can be found in [*DecafProject.pdf*](https://github.com/AriaAdibi/CompilerProject/blob/modifyingTheREADME/DecafProject.pdf). The execution of the virtual machine is also implemented.
+This project is a java implementation of a compiler translating *Decaf* language to a certain target (virtual) machine code. The details of the definitions and objectives can be found in [*DecafProject.pdf*](./Overview/DecafProject.pdf). The execution of the virtual machine is also implemented.
 
 *No special tool is used in this project and all parts are implemented.*
 
